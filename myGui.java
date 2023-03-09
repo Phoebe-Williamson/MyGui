@@ -1,5 +1,6 @@
 import ecs100.*;
 import java.awt.Color; 
+import javax.swing.JColorChooser;
 /**
  * mainkg dome sliders and responding to mojuse events
  *
@@ -14,6 +15,8 @@ public class myGui
     // fileds to remember the pressed position
     private double startX, startY; 
 
+    // remember the oclour
+    private Color currentColor = Color.black;
     /**
      * Constructor for objects of class myGui
      */
@@ -24,6 +27,8 @@ public class myGui
         
         // set up buttons
         UI.addButton("Quit", UI::quit);
+        UI.addButton("Colour", this::chooseColour);
+        UI.addButton("random Colour", this::changeColour);
         UI.addButton("Clear", this::doClear);
         
         // setup slider
@@ -53,12 +58,32 @@ public class myGui
      * only make one call back method to the mouse listener
      */
     public void doMouse(String action, double x, double y) {
-        if (action.equals("pressed")) {
-         this.startX = x;
-         this.startY = y;
+        double width = 50;
+        double height = 50;
+        if (action.equals("clicked")) {
+            UI.fillOval(x-width/2, y-height/2, width, height);
         } else if (action.equals("released")){
             UI.drawLine(this.startX, this.startY, x, y);
+        } else if (action.equals("pressed")){
+            this.startX = x;
+            this.startY = y; 
         }
+    }
+    
+    /**
+     * change to a random colour
+     */
+    public void changeColour(){
+        Color col = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+        UI.setColor(col);
+    }
+    
+    /**
+     * allows user to use a colur for the swing libary
+     */
+    public void chooseColour() {
+        this.currentColor = JColorChooser.showDialog(null, "Coose Colour", this.currentColor);
+        UI.setColor(this.currentColor);
     }
     
     /**
