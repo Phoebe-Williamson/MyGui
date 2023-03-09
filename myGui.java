@@ -11,12 +11,16 @@ public class myGui
 {
     // instance variables - replace the example below with your own
     private double speed;
+    private double size;
     
     // fileds to remember the pressed position
     private double startX, startY; 
 
     // remember the oclour
     private Color currentColor = Color.black;
+    
+    private boolean circle = true;
+    
     /**
      * Constructor for objects of class myGui
      */
@@ -30,13 +34,17 @@ public class myGui
         UI.addButton("Colour", this::chooseColour);
         UI.addButton("random Colour", this::changeColour);
         UI.addButton("Clear", this::doClear);
+        UI.addButton("Switch Shape",this::switchShape);
         
         // setup slider
         UI.addSlider("Speed", 0, 100, 20, this::setSpeed);
-        
+        UI.addSlider("Line size", 1, 50, 10, this::setSize );
+    
         // setup mouse listener
         UI.setLineWidth(10);
         UI.setMouseListener(this::doMouse);
+        
+        
     }
     
     /**
@@ -51,6 +59,28 @@ public class myGui
         } else {
             UI.println("Stationary");
         }
+        
+        this.speed = km;
+    }
+    
+    /**
+     * control line size
+     */
+    public void setSize(double width){
+        
+        this.size = width;
+        UI.setLineWidth(this.size);
+    }
+    
+    /**
+     * callback method for switching shape
+     */    
+    public void switchShape() {
+        if(this.circle == true){
+            this .circle = false;
+        } else {
+            this.circle = true;
+        }
     }
     
     /**
@@ -61,7 +91,11 @@ public class myGui
         double width = 50;
         double height = 50;
         if (action.equals("clicked")) {
-            UI.fillOval(x-width/2, y-height/2, width, height);
+            if(circle == true){
+                UI.fillOval(x-width/2, y-height/2, width, height);
+            }else {
+                UI.fillRect(x-width/2, y-height/2, width, height);
+            }
         } else if (action.equals("released")){
             UI.drawLine(this.startX, this.startY, x, y);
         } else if (action.equals("pressed")){
@@ -85,6 +119,8 @@ public class myGui
         this.currentColor = JColorChooser.showDialog(null, "Coose Colour", this.currentColor);
         UI.setColor(this.currentColor);
     }
+    
+    
     
     /**
      * make the screen clear
